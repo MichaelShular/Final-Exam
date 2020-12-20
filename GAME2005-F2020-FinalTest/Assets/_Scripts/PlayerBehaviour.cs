@@ -43,8 +43,11 @@ public class PlayerBehaviour : MonoBehaviour
             SceneManager.LoadScene("Menu");
         }
         if (Time.timeScale == 1)
-        { 
-            _Fire();
+        {
+            if (bulletManager.HasBullets())
+            {
+                _Fire(); 
+            }
             _Move();
         }
     }
