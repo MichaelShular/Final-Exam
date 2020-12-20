@@ -180,12 +180,13 @@ public class CollisionManager : MonoBehaviour
                         Vector3 q = new Vector3(0.0f, 0.07f, 0.0f);
                         b.transform.position += i;
                         b.transform.position += q;
+                       
                     }
                     if (contactB.face == Vector3.left )
                     {
                         a.gameObject.GetComponent<RigidBody3D>().Stop();
                         Vector3 i = new Vector3(-0.08f - (1.2f * penetration), 0.0f, 0.0f);
-                        Vector3 q = new Vector3(0.0f, 0.07f, 0.0f);
+                        Vector3 q = new Vector3(0.0f, 0.09f, 0.0f);
                         b.transform.position += i;
                         b.transform.position += q;
 
@@ -194,7 +195,7 @@ public class CollisionManager : MonoBehaviour
                     {
                         a.gameObject.GetComponent<RigidBody3D>().Stop();
                         Vector3 i = new Vector3(0.0f, 0.0f, -0.08f - (1.2f * penetration));
-                        Vector3 q = new Vector3(0.0f, 0.07f, 0.0f);
+                        Vector3 q = new Vector3(0.0f, 0.09f, 0.0f);
                         b.transform.position += i;
                         b.transform.position += q;
                         
@@ -216,7 +217,7 @@ public class CollisionManager : MonoBehaviour
                     {
                         a.gameObject.GetComponent<RigidBody3D>().Stop();
                         Vector3 i = new Vector3(0.05f + (1.1f * penetration), 0.0f, 0.0f);
-                        a.transform.position -= i;
+                        a.transform.position -= i;                  
                     }
                     if (contactB.face == Vector3.left)
                     {
@@ -262,8 +263,10 @@ public class CollisionManager : MonoBehaviour
 
                 if (a.gameObject.GetComponent<RigidBody3D>().bodyType == BodyType.DYNAMIC)
                 {
+
                     a.gameObject.GetComponent<RigidBody3D>().isFalling = true;
                     a.isGrounded = false;
+                   
                 }
             }
         }
