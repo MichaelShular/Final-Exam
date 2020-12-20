@@ -27,6 +27,7 @@ public class RigidBody3D : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         timer = 0.0f;
         gravity = -0.001f;
         velocity = Vector3.zero;

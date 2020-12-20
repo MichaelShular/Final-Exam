@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -15,22 +16,37 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Movement")]
     public float speed;
     public bool isGrounded;
-
-
     public RigidBody3D body;
     public CubeBehaviour cube;
     public Camera playerCam;
 
-    void start()
+    void Start()
     {
-
+     
     }
 
     // Update is called once per frame
     void Update()
     {
-        _Fire();
-        _Move();
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Time.timeScale = 1;
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Time.timeScale = 0;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            SceneManager.LoadScene("Menu");
+        }
+        if (Time.timeScale == 1)
+        { 
+            _Fire();
+            _Move();
+        }
     }
 
     private void _Move()
@@ -127,3 +143,5 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
 }
+
+

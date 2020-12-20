@@ -70,7 +70,7 @@ public class CubeBehaviour : MonoBehaviour
     {
         debug = false;
         meshFilter = GetComponent<MeshFilter>();
-
+        Time.timeScale = 0;
         bounds = meshFilter.mesh.bounds;
         size = bounds.size;
 
