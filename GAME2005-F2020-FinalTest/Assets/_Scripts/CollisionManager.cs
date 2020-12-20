@@ -59,25 +59,29 @@ public class CollisionManager : MonoBehaviour
 
     public static void CheckSphereAABB(BulletBehaviour s, CubeBehaviour b)
     {
-        // get box closest point to sphere center by clamping
-        var x = Mathf.Max(b.min.x, Mathf.Min(s.transform.position.x, b.max.x));
-        var y = Mathf.Max(b.min.y, Mathf.Min(s.transform.position.y, b.max.y));
-        var z = Mathf.Max(b.min.z, Mathf.Min(s.transform.position.z, b.max.z));
+        //// get box closest point to sphere center by clamping
+        //var x = Mathf.Max(b.min.x, Mathf.Min(s.transform.position.x, b.max.x));
+        //var y = Mathf.Max(b.min.y, Mathf.Min(s.transform.position.y, b.max.y));
+        //var z = Mathf.Max(b.min.z, Mathf.Min(s.transform.position.z, b.max.z));
 
-        var distance = Math.Sqrt((x - s.transform.position.x) * (x - s.transform.position.x) +
-                                 (y - s.transform.position.y) * (y - s.transform.position.y) +
-                                 (z - s.transform.position.z) * (z - s.transform.position.z));
+        //var distance = Math.Sqrt((x - s.transform.position.x) * (x - s.transform.position.x) +
+        //                         (y - s.transform.position.y) * (y - s.transform.position.y) +
+        //                         (z - s.transform.position.z) * (z - s.transform.position.z));
 
-        if ((distance < s.radius) && (!s.isColliding))
+        Contact contactB = new Contact(b);
+
+        if ((s.min.x <= b.max.x && s.max.x >= b.min.x) &&
+            (s.min.y <= b.max.y && s.max.y >= b.min.y) &&
+            (s.min.z <= b.max.z && s.max.z >= b.min.z))
         {
             // determine the distances between the contact extents
             float[] distances = {
-                (b.max.x - s.transform.position.x),
-                (s.transform.position.x - b.min.x),
-                (b.max.y - s.transform.position.y),
-                (s.transform.position.y - b.min.y),
-                (b.max.z - s.transform.position.z),
-                (s.transform.position.z - b.min.z)
+                (b.max.x - s.min.x),
+                (s.max.x - b.min.x),
+                (b.max.y - s.min.y),
+                (s.max.y - b.min.y),
+                (b.max.z - s.min.z),
+                (s.max.z - b.min.z)
             };
 
             float penetration = float.MaxValue;
@@ -98,26 +102,60 @@ public class CollisionManager : MonoBehaviour
             s.collisionNormal = face;
             //s.isColliding = true;
 
-            
-            Reflect(s);
+            if (!s.contacts.Contains(contactB))
+            {
+                // remove any contact that matches the name but not other parameters
+                for (int i = s.contacts.Count - 1; i > -1; i--)
+                {
+                    if (s.contacts[i].cube.name.Equals(contactB.cube.name))
+                    {
+                        s.contacts.RemoveAt(i);
+                    }
+                }
+                Reflect(s, b);
+            }
         }
 
     }
     
     // This helper function reflects the bullet when it hits an AABB face
-    private static void Reflect(BulletBehaviour s)
+    private static void Reflect(BulletBehaviour s, CubeBehaviour b)
     {
-        if ((s.collisionNormal == Vector3.forward) || (s.collisionNormal == Vector3.back))
+        if ((s.collisionNormal == Vector3.forward))
         {
+            s.transform.position += new Vector3(0, 0, -0.05f);
             s.direction = new Vector3(s.direction.x, s.direction.y, -s.direction.z);
+            s.isColliding = false;
         }
-        else if ((s.collisionNormal == Vector3.right) || (s.collisionNormal == Vector3.left))
+        else if ((s.collisionNormal == Vector3.back))
         {
+            s.transform.position += new Vector3(0, 0, 0.05f);
+            s.direction = new Vector3(s.direction.x, s.direction.y, -s.direction.z);
+            s.isColliding = false;
+        }
+        else if ((s.collisionNormal == Vector3.right))
+        {
+            s.transform.position += new Vector3(-0.05f, 0, 0);
             s.direction = new Vector3(-s.direction.x, s.direction.y, s.direction.z);
+            s.isColliding = false;
         }
-        else if ((s.collisionNormal == Vector3.up) || (s.collisionNormal == Vector3.down))
+        else if ((s.collisionNormal == Vector3.left))
         {
+            s.transform.position += new Vector3(0.05f, 0, 0);
+            s.direction = new Vector3(-s.direction.x, s.direction.y, s.direction.z);
+            s.isColliding = false;
+        }
+        else if ((s.collisionNormal == Vector3.up))
+        {
+            s.transform.position += new Vector3(0, -0.01f, 0); 
             s.direction = new Vector3(s.direction.x, -s.direction.y, s.direction.z);
+            s.isColliding = false;
+        }
+        else if ((s.collisionNormal == Vector3.down))
+        {
+            s.transform.position += new Vector3(0, 0.01f, 0);
+            s.direction = new Vector3(s.direction.x, -s.direction.y, s.direction.z);
+            s.isColliding = false;
         }
     }
 
